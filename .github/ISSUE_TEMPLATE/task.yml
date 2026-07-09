@@ -1,0 +1,31 @@
+name: Task
+description: Track a small implementation task
+title: "[Task]: "
+labels: ["good first milestone"]
+body:
+  - type: input
+    id: area
+    attributes:
+      label: Area
+      placeholder: api / node / scheduler / web / docs
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task description
+      placeholder: Describe the exact implementation task.
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      placeholder: |
+        - [ ] Code merged
+        - [ ] Manual test completed
+        - [ ] README updated if needed
+    validations:
+      required: true

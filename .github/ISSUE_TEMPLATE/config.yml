@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project roadmap
+    url: https://github.com/anishgondhi04/go-distributed-scheduler/blob/main/docs/roadmap.md
+    about: Review the planned milestones and implementation phases before opening a new issue.

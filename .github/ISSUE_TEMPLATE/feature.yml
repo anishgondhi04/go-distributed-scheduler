@@ -1,0 +1,40 @@
+name: Feature
+description: Track a feature for the Go distributed scheduler
+title: "[Feature]: "
+labels: ["backend"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What are we building?
+      placeholder: Add a concise feature description.
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Recruiter-facing outcome
+      description: Why does this improve the portfolio project visually or technically?
+      placeholder: Example - Shows real-time node scheduling in the dashboard.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Implementation checklist
+      description: Break the work into concrete steps.
+      placeholder: |
+        - [ ] Add scheduler interface
+        - [ ] Add API endpoint
+        - [ ] Update dashboard
+    validations:
+      required: true
+
+  - type: input
+    id: milestone
+    attributes:
+      label: Suggested milestone
+      placeholder: Foundation / Live Simulation / Recruiter Polish
