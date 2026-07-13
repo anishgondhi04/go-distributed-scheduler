@@ -4,31 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Go Distributed Scheduler</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background: #0f172a;
-      color: #e2e8f0;
-    }
-    .card {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 1rem;
-      max-width: 720px;
-    }
-    h1 { margin-top: 0; }
-    .muted { color: #94a3b8; }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="card">
+  <header>
     <h1>Go Distributed Scheduler</h1>
-    <p class="muted">Interactive dashboard scaffold created. Live scheduler visualization coming next.</p>
-    <div id="app"></div>
-  </div>
+    <p class="muted">Live simulation — tasks generated, prioritized, and dispatched in real time.</p>
+  </header>
+
+  <section class="stats">
+    <div class="stat-card">
+      <span class="stat-label">Queue length</span>
+      <span class="stat-value" id="queue-length">0</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Tasks dispatched</span>
+      <span class="stat-value" id="tasks-dispatched">0</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Active nodes</span>
+      <span class="stat-value" id="active-nodes">0</span>
+    </div>
+  </section>
+
+  <section id="node-grid" class="node-grid"></section>
+
   <script src="app.js"></script>
 </body>
 </html>
