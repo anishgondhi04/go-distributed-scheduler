@@ -1,9 +1,20 @@
-document.getElementById('app').innerHTML = `
-  <p>Dashboard scaffold is ready.</p>
-  <ul>
-    <li>Node cards</li>
-    <li>Task queue visualization</li>
-    <li>Live metrics panel</li>
-    <li>Scheduling strategy selector</li>
-  </ul>
-`;
+const app = document.getElementById('app');
+app.innerHTML = '<div id="live"></div>';
+const live = document.getElementById('live');
+
+const evtSource = new EventSource('/api/stream');
+
+evtSource.onmessage = (event) => {
+	const data = JSON.parse(event.data);
+	live.innerHTML = `
+		<p>Queue length: ${data.queue_length}</p>
+		<p>Tasks dispatched: ${data.tasks_dispatched}</p>
+		<ul>
+			${data.nodes.map(n => `<li>${n.ID}: ${n.Status} (${n.TaskCount} tasks)</li>`).join('')}
+		</ul>
+	`;
+};
+
+evtSource.onerror = () => {
+	console.warn('Stream disconnected, browser will auto-retry');
+};

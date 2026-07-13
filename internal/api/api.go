@@ -16,26 +16,34 @@ type Metrics struct {
 }
 
 type Server struct {
-	sched   *scheduler.Scheduler
-	nodes   *node.Manager
-	metrics *Metrics
+	sched       *scheduler.Scheduler
+	nodes       *node.Manager
+	metrics     *Metrics
+	broadcaster *Broadcaster
 }
 
 func NewServer(sched *scheduler.Scheduler, nodes *node.Manager) *Server {
 	return &Server{
-		sched:   sched,
-		nodes:   nodes,
-		metrics: &Metrics{StartedAt: time.Now()},
+		sched:       sched,
+		nodes:       nodes,
+		metrics:     &Metrics{StartedAt: time.Now()},
+		broadcaster: NewBroadcaster(),
 	}
 }
 
 func (s *Server) IncrementDispatched() {
 	atomic.AddInt64(&s.metrics.TasksDispatched, 1)
+	s.broadcaster.Publish(map[string]any{
+		"nodes":            s.nodes.Snapshot(),
+		"queue_length":     s.sched.QueueLength(),
+		"tasks_dispatched": atomic.LoadInt64(&s.metrics.TasksDispatched),
+	})
 }
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/nodes", s.handleNodes)
 	mux.HandleFunc("/api/queue", s.handleQueue)
 	mux.HandleFunc("/api/metrics", s.handleMetrics)
+	mux.HandleFunc("/api/stream", s.handleStream)
 }
 
 func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
