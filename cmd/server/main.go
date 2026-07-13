@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/anishgondhi04/go-distributed-scheduler/internal/api"
@@ -37,7 +38,12 @@ func main() {
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/", fs)
 
-	addr := ":8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := ":" + port
+
 	log.Printf("go-distributed-scheduler listening on %s", addr)
 	if err := http.ListenAndServe(addr, mux); err != nil {
 		log.Fatal(err)
