@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/anishgondhi04/go-distributed-scheduler/internal/api"
 	"github.com/anishgondhi04/go-distributed-scheduler/internal/node"
 	"github.com/anishgondhi04/go-distributed-scheduler/internal/scheduler"
 	"github.com/anishgondhi04/go-distributed-scheduler/internal/simulation"
@@ -19,6 +20,8 @@ func main() {
 	sched := scheduler.New(scheduler.PriorityQ)
 	sched.SetNodes(nodeMgr.IDs())
 
+	apiServer := api.NewServer(sched, nodeMgr)
+
 	sim := simulation.New(sched, nodeMgr, 1*time.Second)
 	sim.Start()
 
@@ -28,6 +31,8 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"status":"ok"}`))
 	})
+
+	apiServer.RegisterRoutes(mux)
 
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/", fs)

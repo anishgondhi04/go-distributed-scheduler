@@ -30,7 +30,6 @@ func NewManager() *Manager {
 		nodes: make(map[string]*Node),
 	}
 }
-
 func (m *Manager) Register(id string) *Node {
 	m.mu.Lock()
 	defer m.mu.Unlock()
