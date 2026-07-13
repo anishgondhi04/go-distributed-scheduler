@@ -9,19 +9,24 @@ import (
 	"github.com/anishgondhi04/go-distributed-scheduler/internal/scheduler"
 )
 
+type MetricsRecorder interface {
+	IncrementDispatched()
+}
 type Simulator struct {
 	sched    *scheduler.Scheduler
 	nodes    *node.Manager
 	interval time.Duration
 	stopCh   chan struct{}
+	metrics  MetricsRecorder
 }
 
-func New(sched *scheduler.Scheduler, nodes *node.Manager, interval time.Duration) *Simulator {
+func New(sched *scheduler.Scheduler, nodes *node.Manager, interval time.Duration, metrics MetricsRecorder) *Simulator {
 	return &Simulator{
 		sched:    sched,
 		nodes:    nodes,
 		interval: interval,
 		stopCh:   make(chan struct{}),
+		metrics:  metrics,
 	}
 }
 func (s *Simulator) Start() {
@@ -69,9 +74,12 @@ func (s *Simulator) dispatch() {
 	next.NodeID = nodeID
 	s.nodes.AssignTask(nodeID)
 
+	if s.metrics != nil {
+		s.metrics.IncrementDispatched()
+	}
+
 	go func() {
 		time.Sleep(500 * time.Millisecond)
 		s.nodes.CompleteTask(nodeID)
 	}()
-	//log.Printf("dispatched %s to %s", next.ID, nodeID)
 }

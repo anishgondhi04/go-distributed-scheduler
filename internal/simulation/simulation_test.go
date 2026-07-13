@@ -15,7 +15,7 @@ func TestSimulatorDispatches(t *testing.T) {
 	sched := scheduler.New(scheduler.PriorityQ)
 	sched.SetNodes(nodeMgr.IDs())
 
-	sim := New(sched, nodeMgr, 50*time.Millisecond)
+	sim := New(sched, nodeMgr, 50*time.Millisecond, nil)
 	sim.Start()
 
 	time.Sleep(200 * time.Millisecond)

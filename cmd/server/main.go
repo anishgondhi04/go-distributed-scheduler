@@ -22,7 +22,7 @@ func main() {
 
 	apiServer := api.NewServer(sched, nodeMgr)
 
-	sim := simulation.New(sched, nodeMgr, 1*time.Second)
+	sim := simulation.New(sched, nodeMgr, 1*time.Second, apiServer)
 	sim.Start()
 
 	mux := http.NewServeMux()
