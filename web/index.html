@@ -10,22 +10,23 @@
   <header>
     <h1>Go Distributed Scheduler</h1>
     <p class="muted">Live simulation — tasks generated, prioritized, and dispatched in real time.</p>
+    <div class="strategy-picker">
+      <label for="strategy-select">Scheduling strategy</label>
+      <select id="strategy-select">
+        <option value="priority">Priority</option>
+        <option value="fcfs">FCFS</option>
+        <option value="round_robin">Round Robin</option>
+      </select>
+    </div>
   </header>
 
   <section class="stats">
-    <div class="stat-card">
-      <span class="stat-label">Queue length</span>
-      <span class="stat-value" id="queue-length">0</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Tasks dispatched</span>
-      <span class="stat-value" id="tasks-dispatched">0</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Active nodes</span>
-      <span class="stat-value" id="active-nodes">0</span>
-    </div>
+    <div class="stat-card"><span class="stat-label">Queue length</span><span class="stat-value" id="queue-length">0</span></div>
+    <div class="stat-card"><span class="stat-label">Tasks dispatched</span><span class="stat-value" id="tasks-dispatched">0</span></div>
+    <div class="stat-card"><span class="stat-label">Active nodes</span><span class="stat-value" id="active-nodes">0</span></div>
   </section>
+
+  <canvas id="network" width="1000" height="480"></canvas>
 
   <section id="node-grid" class="node-grid"></section>
 

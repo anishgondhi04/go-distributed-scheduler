@@ -44,6 +44,7 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/queue", s.handleQueue)
 	mux.HandleFunc("/api/metrics", s.handleMetrics)
 	mux.HandleFunc("/api/stream", s.handleStream)
+	mux.HandleFunc("/api/strategy", s.handleStrategy)
 }
 
 func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
@@ -70,4 +71,31 @@ func writeJSON(w http.ResponseWriter, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(v)
+}
+func (s *Server) handleStrategy(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		writeJSON(w, map[string]string{"strategy": string(s.sched.GetStrategy())})
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		var body struct {
+			Strategy string `json:"strategy"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			http.Error(w, "invalid body", http.StatusBadRequest)
+			return
+		}
+
+		switch body.Strategy {
+		case "fcfs", "priority", "round_robin":
+			s.sched.SetStrategy(scheduler.Strategy(body.Strategy))
+			writeJSON(w, map[string]string{"strategy": body.Strategy})
+		default:
+			http.Error(w, "unknown strategy", http.StatusBadRequest)
+		}
+		return
+	}
+
+	http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 }

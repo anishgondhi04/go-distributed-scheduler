@@ -26,6 +26,7 @@ type Scheduler struct {
 	mu       sync.Mutex
 	strategy Strategy
 	queue    *taskHeap
+	fifo     []*Task
 	rrIndex  int
 	nodeIDs  []string
 }
@@ -48,30 +49,36 @@ func (s *Scheduler) Submit(t *Task) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	t.CreatedAt = time.Now()
-	heap.Push(s.queue, t)
-}
 
+	if s.strategy == PriorityQ {
+		heap.Push(s.queue, t)
+	} else {
+		s.fifo = append(s.fifo, t)
+	}
+}
 func (s *Scheduler) Next() *Task {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-
-	if s.queue.Len() == 0 {
-		return nil
-	}
 
 	var t *Task
 
 	switch s.strategy {
 	case PriorityQ:
+		if s.queue.Len() == 0 {
+			return nil
+		}
 		t = heap.Pop(s.queue).(*Task)
 	default:
-		t = heap.Pop(s.queue).(*Task)
+		if len(s.fifo) == 0 {
+			return nil
+		}
+		t = s.fifo[0]
+		s.fifo = s.fifo[1:]
 	}
 
 	t.NodeID = s.assignNode()
 	return t
 }
-
 func (s *Scheduler) assignNode() string {
 	if len(s.nodeIDs) == 0 {
 		return ""
@@ -80,9 +87,22 @@ func (s *Scheduler) assignNode() string {
 	s.rrIndex++
 	return node
 }
-
 func (s *Scheduler) QueueLength() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.queue.Len()
+	if s.strategy == PriorityQ {
+		return s.queue.Len()
+	}
+	return len(s.fifo)
+}
+func (s *Scheduler) SetStrategy(strategy Strategy) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.strategy = strategy
+}
+
+func (s *Scheduler) GetStrategy() Strategy {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.strategy
 }
