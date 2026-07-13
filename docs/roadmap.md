@@ -12,8 +12,3 @@
 - Add live browser updates with WebSocket or SSE
 - Show queue counts and node load visually
 
-## Recruiter Polish
-- Add scheduling strategy switcher
-- Add metrics panel
-- Improve README with architecture and demo GIF
-- Prepare deployment and public demo link
